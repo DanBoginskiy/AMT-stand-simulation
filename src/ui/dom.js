@@ -8,7 +8,9 @@ export function el(tag, props = {}, children = []) {
     else if (k === 'text') node.textContent = v;
     else if (k.startsWith('on') && typeof v === 'function') node.addEventListener(k.slice(2).toLowerCase(), v);
     else if (k === 'style' && typeof v === 'object') Object.assign(node.style, v);
-    else node.setAttribute(k, v);
+    // Skip null/undefined/false so e.g. `disabled: null` doesn't set the
+    // attribute (presence alone disables an element regardless of value).
+    else if (v != null && v !== false) node.setAttribute(k, v);
   }
   const kids = Array.isArray(children) ? children : [children];
   for (const c of kids) {
