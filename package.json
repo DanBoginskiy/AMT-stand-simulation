@@ -1,0 +1,18 @@
+{
+  "name": "amt-stand",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Interactive educational stand that simulates the full Automatic Music Transcription (AMT) pipeline in the browser.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vexflow": "^4.2.5"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0"
+  }
+}
