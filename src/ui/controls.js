@@ -29,17 +29,20 @@ export function buildTopbar(actions) {
   );
   algoSelect.value = state.pitchAlgo;
 
-  const runBtn = el('button', {
-    class: 'primary',
-    text: state.pipeline ? t('rerun') : t('runAll'),
-    onclick: actions.run,
-  });
-
   const playBtn = el('button', {
     text: state.isPlaying ? t('stop') : t('play'),
     disabled: state.pipeline ? null : 'disabled',
     onclick: actions.togglePlay,
   });
+
+  // Show "Run pipeline" only when no pipeline exists yet
+  const runBtn = !state.pipeline
+    ? el('button', {
+        class: 'primary',
+        text: t('runAll'),
+        onclick: actions.run,
+      })
+    : null;
 
   return el('div', { class: 'topbar' }, [
     el('h1', { html: `${t('appTitle')} <span class="sub">${t('appSub')}</span>` }),
@@ -47,7 +50,7 @@ export function buildTopbar(actions) {
     group(t('mode'), modeToggle),
     group(t('pitchAlgo'), algoSelect),
     group(t('lang'), langToggle),
-    runBtn,
+    ...(runBtn ? [runBtn] : []),
     playBtn,
   ]);
 }

@@ -24,21 +24,43 @@ function frameSlider(ctx) {
   const { p, state, helpers } = ctx;
   const n = p.framing.times.length;
   const out = el('output', { text: '' });
-  const update = () => {
-    const time = p.framing.times[state.selectedFrame] ?? 0;
-    out.textContent = `#${state.selectedFrame} · ${time.toFixed(3)}s`;
+
+  const update = (idx) => {
+    const time = p.framing.times[idx] ?? 0;
+    out.textContent = `#${idx} · ${time.toFixed(3)}s`;
+    input.value = String(idx);
   };
+
+  const step = (delta) => {
+    const next = Math.max(0, Math.min(n - 1, state.selectedFrame + delta));
+    helpers.selectFrame(next);
+    update(next);
+  };
+
   const input = el('input', {
     type: 'range',
     min: '0',
     max: String(n - 1),
     value: String(state.selectedFrame),
-    oninput: (e) => helpers.selectFrame(parseInt(e.target.value, 10)),
+    oninput: (e) => {
+      const v = parseInt(e.target.value, 10);
+      helpers.selectFrame(v);
+      update(v);
+    },
   });
-  update();
+
+  const btnPrev = el('button', { class: 'frame-btn', text: '−', title: '−1 frame', onclick: () => step(-1) });
+  const btnNext = el('button', { class: 'frame-btn', text: '+', title: '+1 frame', onclick: () => step(+1) });
+  const btnBack10 = el('button', { class: 'frame-btn', text: '−10', title: '−10 frames', onclick: () => step(-10) });
+  const btnFwd10  = el('button', { class: 'frame-btn', text: '+10', title: '+10 frames', onclick: () => step(+10) });
+
+  update(state.selectedFrame);
+
   return el('div', { class: 'slider-row' }, [
     el('label', { text: t('selectedFrame') }),
+    btnBack10, btnPrev,
     input,
+    btnNext, btnFwd10,
     out,
   ]);
 }
